@@ -1,13 +1,13 @@
 # harpoonEx
 
 ## What is this?
-Since the [Harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) harpoon project is verry consservative on new fatures, I tried to implement a few nice the have's using the plugin api of harpoon.
+Since the [Harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) project is very conservative on new features, I tried to implement a few nice-to-haves using the plugin API of Harpoon.
 
 ## Features
 ### Toggle previous and next item in Harpoon List
-You might say "this already exists in the current plugin", and you are right, but the plugin sometimes looses count of the currently selected item (e.g. when you switch buffer with some other means then Harpoon). So I'm keeping my own count and (in my tests at least) the function always works as expected.
+You might say "this already exists in the current plugin", and you are right, but the plugin sometimes loses count of the currently selected item (e.g. when you switch buffer with some other means then Harpoon). So I'm keeping my own count and (in my tests at least) the function always works as expected.
 #### How to use:
-Add the following to your harpoon plugin config: 
+Add the following to your Harpoon plugin config: 
 ```lua
 -- Include harpoonEx as a dependency
 "theprimeagen/harpoon",
@@ -134,4 +134,4 @@ end,
 ```
 
 ## Thanks
-Special thanks goes out to [ThePrimagen](https://github.com/ThePrimeagen), for creating the awesome Harpoon plugin and to [kimabrandt-flx](https://github.com/kimabrandt-flx) for comming up with the code to keep track of the index of the active item.
+Special thanks goes out to [ThePrimagen](https://github.com/ThePrimeagen), for creating the awesome Harpoon plugin and to [kimabrandt-flx](https://github.com/kimabrandt-flx) for coming up with the code to keep track of the index of the active item.
