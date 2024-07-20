@@ -94,7 +94,7 @@ opts = {
                   harpoon = "Harpoon"
                 }, -- Shows specific buffer name for that filetype ( { `filetype` = `buffer_name`, ... } )
 
-                -- Automatically updates active buffer color to match color of other components (will be overidden if harpoons_colors is set)
+                -- Automatically updates active buffer color to match color of other components (will be overridden if harpoons_colors is set)
                 use_mode_colors = false,
          
                 harpoons_color = {
@@ -125,7 +125,6 @@ init = function()
     -- if so, try to select the first item in the harpoon list
     if
         (vim.fn.argc() == 0 or (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1))
-        and (#harpoon:list().items > 0)
         and vim.api.nvim_get_option_value("buftype", { buf = 0 }) == ""
    then
         harpoonEx.next_harpoon(harpoon:list(), false)
