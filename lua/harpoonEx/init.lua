@@ -1,57 +1,6 @@
-local Path = require("plenary.path")
-
 M = {}
 
 M.index = {}
-
-local function index_of(items, length, element, config)
-	local equals = config and config.equals or function(a, b)
-		return a == b
-	end
-	local index = -1
-	for i = 1, length do
-		local item = items[i]
-		if equals(element, item) then
-			index = i
-			break
-		end
-	end
-
-	return index
-end
-
-local sync_index = function(list, options)
-	local bufnr = options.bufnr
-	local filename = options.filename
-	local index = options.index
-	if bufnr ~= nil and filename ~= nil then
-		local config = list.config
-		local relname = Path:new(filename):make_relative(config.get_root_dir())
-		if bufnr == vim.fn.bufnr(relname, false) then
-			local element = config.create_list_item(config, relname)
-			local index_found = index_of(list.items, list._length, element, config)
-			if index_found > -1 then
-				M.index[list.name] = index_found
-			end
-		elseif index ~= nil then
-			M.index[list.name] = index
-		end
-	elseif index ~= nil then
-		M.index[list.name] = index
-	end
-end
-
-local list_created = function(list)
-	vim.api.nvim_create_autocmd({ "BufEnter" }, {
-		pattern = { "*" },
-		callback = function(args)
-			sync_index(list, {
-				bufnr = args.buf,
-				filename = args.file,
-			})
-		end,
-	})
-end
 
 local get_full_path = function(path)
 	local bufPath = vim.loop.fs_realpath(path)
@@ -63,6 +12,40 @@ local get_full_path = function(path)
 		end
 	end
 	return bufPath
+end
+
+local sync_index = function(list, index)
+	if index then
+		M.index[list.name] = index
+		return
+	end
+
+	if M.index[list.name] > list._length then
+		M.index[list.name] = list._length
+		return
+	end
+	local bufPath = get_full_path(vim.api.nvim_buf_get_name(0))
+	-- find corresponding harpoon item
+	for i = 1, list._length do
+		local item = list.items[i]
+		if item then
+			local harpoonPath = get_full_path(item.value)
+			if bufPath == harpoonPath then
+				M.index[list.name] = i
+				return
+			end
+		end
+	end
+end
+
+local list_created = function(list)
+	M.index[list.name] = 0
+	vim.api.nvim_create_autocmd({ "BufEnter" }, {
+		pattern = { "*" },
+		callback = function(_)
+			sync_index(list)
+		end,
+	})
 end
 
 -- win_id = win_id,
@@ -84,13 +67,13 @@ end
 function M.extend()
 	return {
 		SELECT = function(args)
-			sync_index(args.list, { index = args.idx })
+			sync_index(args.list, args.idx)
 		end,
 		ADD = function(args)
-			sync_index(args.list, { index = args.idx })
+			sync_index(args.list, args.idx)
 		end,
 		REMOVE = function(args)
-			sync_index(args.list, { index = args.idx })
+			sync_index(args.list)
 		end,
 		LIST_CREATED = list_created,
 		UI_CREATE = ui_create,
@@ -138,19 +121,45 @@ M.next_harpoon = function(list, prev)
 	end
 end
 
-M.telescope_live_grep = function(harpoon_files)
-	local has_t, builtin = pcall(require, "telescope.builtin")
-	if not has_t then
+M.telescope_live_grep = function(list)
+	local ok, builtin = pcall(require, "telescope.builtin")
+	if not ok then
 		return
 	end
 
 	local file_paths = {}
-	for _, item in pairs(harpoon_files.items) do
+	for _, item in pairs(list.items) do
 		table.insert(file_paths, item.value)
 	end
 	builtin.live_grep({
 		search_dirs = file_paths,
 	})
+end
+
+M.delete = function(list, index)
+	if not index then
+		if not cur_buf_is_harpoon(list) then
+			return
+		end
+		index = M.index[list.name]
+	end
+	if not list.items[index] then
+		sync_index(list)
+		return
+	end
+	local item = table.remove(list.items, index)
+	list._length = list._length - 1
+
+	local ok, Extensions = pcall(require, "harpoon.extensions")
+	if not ok then
+		return
+	end
+
+	Extensions.extensions:emit(Extensions.event_names.REMOVE, { list = list, item = item, idx = index })
+
+	if not cur_buf_is_harpoon(list) then
+		M.next_harpoon(list)
+	end
 end
 
 return M
