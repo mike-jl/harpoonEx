@@ -6,6 +6,7 @@ Since the [Harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) proje
 ## Features
 ### Reload Harpoon List on directory change
 This feature is experimental, this is why it's disabled by default.
+The option registers an autocommand on DirChanged, but you can also always call harpoonEx:reset() manually when you want to trigger a reload, with or without setting the option.
 #### How to use:
 To enable, add the following option to the plugin like so:
 ```lua
