@@ -4,6 +4,17 @@
 Since the [Harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) project is very conservative on new features, I tried to implement a few nice-to-haves using the plugin API of Harpoon.
 
 ## Features
+### Reload Harpoon List on directory change
+This feature is experimental, this is why it's disabled by default.
+#### How to use:
+To enable, add the following option to the plugin like so:
+```lua
+"theprimeagen/harpoon",
+branch = "harpoon2",
+dependencies = {
+    {"mike-jl/harpoonEx", opts = { reload_on_dir_change = true} },
+},
+```
 ### Toggle previous and next item in Harpoon List
 You might say "this already exists in the current plugin", and you are right, but the plugin sometimes loses count of the currently selected item (e.g. when you switch buffer with some other means then Harpoon). So I'm keeping my own count and (in my tests at least) the function always works as expected.
 #### How to use:
@@ -28,6 +39,30 @@ config = function()
     vim.keymap.set("n", "<Tab>", function()
         harpoonEx.next_harpoon(harpoon:list(), false)
     end, { desc = "Switch to next buffer in Harpoon List" })
+
+    -- the rest of your config function
+end
+```
+### Delete item from Harpoon List
+This function also already exists in the plugin, but again, there are some caviats with the current implementation. With the delete method form harpoonEx, the item is not just set to nil, but removed from the list entirely. This prevents data loss on quitting nvim, because currently all items after a blank line are discarded. (see #573)
+#### How to use:
+Add the following to your Harpoon plugin config: 
+```lua
+-- Include harpoonEx as a dependency
+"theprimeagen/harpoon",
+branch = "harpoon2",
+dependencies = {
+    "mike-jl/harpoonEx",
+},
+
+config = function()
+    local harpoonEx = require("harpoonEx")
+    -- load extension
+    harpoon:extend(harpoonEx.extend())
+    -- register key
+    vim.keymap.set("n", "<M-d>", function()
+        harpoonEx.delete(harpoon:list())
+    end, { desc = "Add current filte to Harpoon List" })
 
     -- the rest of your config function
 end
@@ -57,6 +92,7 @@ end
 ## Lualine Component to show Harpoon List:
 ![image](https://github.com/user-attachments/assets/a4f49f82-8ac2-48ad-b5b0-6777753c3c6a)
 The currently open buffer will always be shown, even if it's not on the Harpoon List.
+You can also navigate by using the mouse, were a left click navigates to the item and a right click adds or removes the item form the harpoon list.
 #### How to use:
 Example for tabline, but can be used anywhere of course.
 Add the following to your **lualine** plugin config: 

@@ -74,11 +74,8 @@ end
 ---@param name string
 ---@return string
 function Harpoon:configure_mouse_click(name)
-	if self.hpnr then
-		return string.format("%%%s@LualineSwitchHarpoon@%s%%T", self.hpnr, name)
-	else
-		return name
-	end
+	local hpnr = self.hpnr or 0
+	return string.format("%%%s@LualineSwitchHarpoon@%s%%T", hpnr, name)
 end
 
 ---returns rendered harpoon

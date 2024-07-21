@@ -262,7 +262,24 @@ end
 
 vim.cmd([[
   function! LualineSwitchHarpoon(hpnr, mouseclicks, mousebutton, modifiers)
-    execute ":lua require(\"harpoon\"):list():select(" . a:hpnr . ")"
+lua << EOF
+  local harpoon = require("harpoon")
+  local harpoonEx = require("harpoonEx")
+  local hpnr = vim.fn.eval("a:hpnr")
+  local mouseclicks = vim.fn.eval("a:mouseclicks")
+  local mousebutton = vim.fn.eval("a:mousebutton")
+  local modifiers = vim.fn.eval("a:modifiers")
+
+  if mousebutton == "l" then
+	  harpoon:list():select(hpnr)
+  else
+      if hpnr > 0 then
+	      harpoonEx.delete(harpoon:list(), hpnr)
+      else
+          harpoon:list():add()
+      end
+  end
+EOF
   endfunction
 ]])
 
