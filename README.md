@@ -59,8 +59,7 @@ config = function()
     local harpoonEx = require("harpoonEx")
     -- load extension
     harpoon:extend(harpoonEx.extend())
-    -- register keys
-    -- Toggle previous & next buffers stored within Harpoon list
+    -- register key
     vim.keymap.set("n", "<M-d>", function()
         harpoonEx.delete(harpoon:list())
     end, { desc = "Add current filte to Harpoon List" })
