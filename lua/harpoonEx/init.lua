@@ -162,4 +162,33 @@ M.delete = function(list, index)
 	end
 end
 
+local default_options = {
+	reload_on_dir_change = false,
+}
+
+M.options = {}
+
+M.setup = function(opts)
+	M.options = vim.tbl_deep_extend("keep", opts or {}, default_options)
+	if M.options.reload_on_dir_change then
+		local hok, Harpoon = pcall(require, "harpoon")
+		vim.api.nvim_create_autocmd({ "DirChanged" }, {
+			pattern = "*",
+			callback = function(ev)
+				M:reset()
+			end,
+		})
+	end
+end
+
+M.reset = function()
+	local hok, Harpoon = pcall(require, "harpoon")
+	local dok, Data = pcall(require, "harpoon.data")
+	if not hok or not dok then
+		return
+	end
+	Harpoon.data = Data.Data:new(Harpoon.config)
+	Harpoon.lists = {}
+end
+
 return M
