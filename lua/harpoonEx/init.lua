@@ -48,9 +48,6 @@ local list_created = function(list)
 	})
 end
 
--- win_id = win_id,
--- bufnr = bufnr,
--- current_file = current_file,
 local ui_create = function(args)
 	local bufPath = get_full_path(args.current_file)
 
