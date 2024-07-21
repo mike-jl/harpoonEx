@@ -43,6 +43,31 @@ config = function()
     -- the rest of your config function
 end
 ```
+### Delete item from Harpoon List
+This function also already exists in the plugin, but again, there are some caviats with the current implementation. With the delete method form harpoonEx, the item is not just set to nil, but removed from the list entirely. This prevents data loss on quitting nvim, because currently all items after a blank line are discarded. (see #573)
+#### How to use:
+Add the following to your Harpoon plugin config: 
+```lua
+-- Include harpoonEx as a dependency
+"theprimeagen/harpoon",
+branch = "harpoon2",
+dependencies = {
+    "mike-jl/harpoonEx",
+},
+
+config = function()
+    local harpoonEx = require("harpoonEx")
+    -- load extension
+    harpoon:extend(harpoonEx.extend())
+    -- register keys
+    -- Toggle previous & next buffers stored within Harpoon list
+    vim.keymap.set("n", "<M-d>", function()
+        harpoonEx.delete(harpoon:list())
+    end, { desc = "Add current filte to Harpoon List" })
+
+    -- the rest of your config function
+end
+```
 ### Live-Grep with telescope in your Harpoon List
 #### How to use:
 Add the following to your Harpoon plugin config: 
@@ -68,6 +93,7 @@ end
 ## Lualine Component to show Harpoon List:
 ![image](https://github.com/user-attachments/assets/a4f49f82-8ac2-48ad-b5b0-6777753c3c6a)
 The currently open buffer will always be shown, even if it's not on the Harpoon List.
+You can also navigate by using the mouse, were a left click navigates to the item and a right click adds or removes the item form the harpoon list.
 #### How to use:
 Example for tabline, but can be used anywhere of course.
 Add the following to your **lualine** plugin config: 
