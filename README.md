@@ -4,6 +4,17 @@
 Since the [Harpoon](https://github.com/ThePrimeagen/harpoon/tree/harpoon2) project is very conservative on new features, I tried to implement a few nice-to-haves using the plugin API of Harpoon.
 
 ## Features
+### Reload Harpoon List on directory change
+This feature is experimental, this is why it's disabled by default.
+#### How to use:
+To enable, add the following option to the plugin like so:
+```lua
+"theprimeagen/harpoon",
+branch = "harpoon2",
+dependencies = {
+    {"mike-jl/harpoonEx", opts = { reload_on_dir_change = true} },
+},
+```
 ### Toggle previous and next item in Harpoon List
 You might say "this already exists in the current plugin", and you are right, but the plugin sometimes loses count of the currently selected item (e.g. when you switch buffer with some other means then Harpoon). So I'm keeping my own count and (in my tests at least) the function always works as expected.
 #### How to use:
