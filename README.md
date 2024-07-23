@@ -69,11 +69,32 @@ config = function()
     -- the rest of your config function
 end
 ```
-### Show/Edit Harpoon List with telescope
+### Show/Edit Harpoon List with telescope      
+![Screen Recording 2024-07-23 at 18 03 54](https://github.com/user-attachments/assets/8cc03e93-faa6-4614-8d04-6df599c432e9)
 Keymaps:
-- C-d = Delete selected Item
-- C-p = Move selected Item up
-- C-n = Move selected Itemp down
+- \<C-d\> = Delete selected Item
+- \<C-p\> = Move selected Item up
+- \<C-n\> = Move selected Item down
+#### How to use:
+Add the following to your Harpoon plugin config: 
+```lua
+-- Include harpoonEx and telescope as a dependency
+"theprimeagen/harpoon",
+branch = "harpoon2",
+dependencies = {
+    "nvim-telescope/telescope.nvim",
+    "mike-jl/harpoonEx",
+},
+
+config = function()
+    local harpoonEx = require("harpoonEx")
+    vim.keymap.set("n", "<M-e>", function()
+        require("telescope").extensions.harpoonEx.harpoonEx()
+    end, { desc = "Open harpoon window" })
+
+    -- the rest of your config function
+end
+```
 ### Live-Grep with telescope in your Harpoon List
 #### How to use:
 Add the following to your Harpoon plugin config: 
