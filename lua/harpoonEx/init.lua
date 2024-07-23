@@ -28,7 +28,7 @@ local sync_index = function(list, index)
 	-- find corresponding harpoon item
 	for i = 1, list._length do
 		local item = list.items[i]
-		if item then
+		if item ~= nil and item.value ~= nil then
 			local harpoonPath = get_full_path(item.value)
 			if bufPath == harpoonPath then
 				M.index[list.name] = i
@@ -133,7 +133,7 @@ M.telescope_live_grep = function(list)
 	})
 end
 
-M.delete = function(list, index)
+M.delete = function(list, index, switch)
 	if not index then
 		if not cur_buf_is_harpoon(list) then
 			return
@@ -154,7 +154,7 @@ M.delete = function(list, index)
 
 	Extensions.extensions:emit(Extensions.event_names.REMOVE, { list = list, item = item, idx = index })
 
-	if not cur_buf_is_harpoon(list) then
+	if switch and not cur_buf_is_harpoon(list) and vim.api.nvim_get_option_value("buftype", { buf = 0 }) == "" then
 		M.next_harpoon(list)
 	end
 end
@@ -168,10 +168,9 @@ M.options = {}
 M.setup = function(opts)
 	M.options = vim.tbl_deep_extend("keep", opts or {}, default_options)
 	if M.options.reload_on_dir_change then
-		local hok, Harpoon = pcall(require, "harpoon")
 		vim.api.nvim_create_autocmd({ "DirChanged" }, {
 			pattern = "*",
-			callback = function(ev)
+			callback = function(_)
 				M:reset()
 			end,
 		})

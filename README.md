@@ -46,6 +46,7 @@ end
 ```
 ### Delete item from Harpoon List
 This function also already exists in the plugin, but again, there are some caviats with the current implementation. With the delete method form harpoonEx, the item is not just set to nil, but removed from the list entirely. This prevents data loss on quitting nvim, because currently all items after a blank line are discarded. (see #573)
+The delete method takes three arguments, fhe first one, the list, is required. The socond one the index to delete and the third one is an option if the next harpoon item should be selected after the deletion.
 #### How to use:
 Add the following to your Harpoon plugin config: 
 ```lua
@@ -68,6 +69,11 @@ config = function()
     -- the rest of your config function
 end
 ```
+### Show/Edit Harpoon List with telescope
+Keymaps:
+- C-d = Delete selected Item
+- C-p = Move selected Item up
+- C-n = Move selected Itemp down
 ### Live-Grep with telescope in your Harpoon List
 #### How to use:
 Add the following to your Harpoon plugin config: 
@@ -89,8 +95,7 @@ config = function()
     -- the rest of your config function
 end
 ```
-
-## Lualine Component to show Harpoon List:
+### Lualine Component to show Harpoon List:
 ![image](https://github.com/user-attachments/assets/a4f49f82-8ac2-48ad-b5b0-6777753c3c6a)
 The currently open buffer will always be shown, even if it's not on the Harpoon List.
 You can also navigate by using the mouse, were a left click navigates to the item and a right click adds or removes the item form the harpoon list.
