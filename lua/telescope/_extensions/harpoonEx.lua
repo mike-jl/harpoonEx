@@ -1,6 +1,7 @@
 local action_state = require("telescope.actions.state")
 local harpoon = require("harpoon")
 local harpoonEx = require("harpoonEx")
+local actions = require("telescope.actions")
 
 local conf = {}
 
@@ -50,14 +51,6 @@ local make_finder = function(harpoon_files)
 			}
 		end,
 	})
-end
-
-local delete_mark = function(prompt_bufnr)
-	local selection = action_state.get_selected_entry()
-	harpoonEx.delete(harpoon:list(), selection.index)
-
-	local current_picker = action_state.get_current_picker(prompt_bufnr)
-	current_picker:refresh(make_finder(harpoon:list()), { reset_prompt = true })
 end
 
 local move_mark_up = function(prompt_bufnr)
@@ -124,9 +117,24 @@ return require("telescope").register_extension({
 					previewer = conf.grep_previewer({}),
 					sorter = conf.generic_sorter({}),
 					attach_mappings = function(_, map)
-						map({ "i", "n" }, "<C-d>", delete_mark)
-						map({ "i", "n" }, "<C-p>", move_mark_up)
-						map({ "i", "n" }, "<C-n>", move_mark_down)
+						actions.delete_mark = function(prompt_bufnr)
+							local current_picker = action_state.get_current_picker(prompt_bufnr)
+							current_picker:delete_selection(function(selection)
+								harpoonEx.delete(harpoon:list(), selection.value[1])
+							end)
+						end
+
+						actions.move_mark_up = function(prompt_bufnr)
+							move_mark_up(prompt_bufnr)
+						end
+
+						actions.move_mark_down = function(prompt_bufnr)
+							move_mark_down(prompt_bufnr)
+						end
+
+						map({ "i", "n" }, "<M-d>", actions.delete_mark)
+						map({ "i", "n" }, "<M-k>", actions.move_mark_up)
+						map({ "i", "n" }, "<M-j>", actions.move_mark_down)
 
 						return true
 					end,

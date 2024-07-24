@@ -71,10 +71,10 @@ end
 ```
 ### Show/Edit Harpoon List with telescope      
 ![Screen Recording 2024-07-23 at 18 03 54](https://github.com/user-attachments/assets/8cc03e93-faa6-4614-8d04-6df599c432e9)
-Keymaps:
-- \<C-d\> = Delete selected Item
-- \<C-p\> = Move selected Item up
-- \<C-n\> = Move selected Item down
+Default Keymaps:
+- \<M-d\> = Delete selected Item
+- \<M-p\> = Move selected Item up
+- \<M-n\> = Move selected Item down
 #### How to use:
 Add the following to your Harpoon plugin config: 
 ```lua
@@ -88,8 +88,18 @@ dependencies = {
 
 config = function()
     local harpoonEx = require("harpoonEx")
+
     vim.keymap.set("n", "<M-e>", function()
-        require("telescope").extensions.harpoonEx.harpoonEx()
+        require("telescope").extensions.harpoonEx.harpoonEx({
+            -- Optional: modify mappings, default mappings:
+            attach_mappings = function(_, map)
+                local actions = require("telescope.actions")
+                map({ "i", "n" }, "<M-d>", actions.delete_mark)
+                map({ "i", "n" }, "<M-k>", actions.move_mark_up)
+                map({ "i", "n" }, "<M-j>", actions.move_mark_down)
+            end,
+        })
+        return true
     end, { desc = "Open harpoon window" })
 
     -- the rest of your config function
