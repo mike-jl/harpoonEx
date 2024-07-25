@@ -97,6 +97,7 @@ config = function()
                 map({ "i", "n" }, "<M-d>", actions.delete_mark)
                 map({ "i", "n" }, "<M-k>", actions.move_mark_up)
                 map({ "i", "n" }, "<M-j>", actions.move_mark_down)
+                return true
             end,
         })
         return true
