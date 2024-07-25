@@ -93,7 +93,7 @@ config = function()
         require("telescope").extensions.harpoonEx.harpoonEx({
             -- Optional: modify mappings, default mappings:
             attach_mappings = function(_, map)
-                local actions = require("telescope.actions")
+                local actions = require("telescope").extensions.harpoonEx.actions
                 map({ "i", "n" }, "<M-d>", actions.delete_mark)
                 map({ "i", "n" }, "<M-k>", actions.move_mark_up)
                 map({ "i", "n" }, "<M-j>", actions.move_mark_down)
@@ -105,6 +105,9 @@ config = function()
     -- the rest of your config function
 end
 ```
+Additional Info:
+There are a few additional ways to configure a telescope plugin. You can also configure it in the telescope setup (call to load_extension required), or use mappings instead of attach_mappings This way is just the easiest for me to show in the readme.
+Details see telescope documentation.
 ### Live-Grep with telescope in your Harpoon List
 #### How to use:
 Add the following to your Harpoon plugin config: 
