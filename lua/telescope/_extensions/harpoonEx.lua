@@ -107,6 +107,7 @@ local actions = {
 		current_picker:delete_selection(function(selection)
 			harpoonEx.delete(harpoon:list(), selection.value[1])
 		end)
+		current_picker:refresh(make_finder(harpoon:list()), { reset_prompt = true })
 	end,
 
 	move_mark_up = function(prompt_bufnr)
