@@ -204,10 +204,9 @@ init = function()
         (vim.fn.argc() == 0 or (vim.fn.argc() == 1 and vim.fn.isdirectory(vim.fn.argv(0)) == 1))
         and vim.api.nvim_get_option_value("buftype", { buf = 0 }) == ""
    then
-        local function start_harpoon()
+        vim.schedule(function()
             harpoonEx.next_harpoon(harpoon:list(), false)
-        end
-        vim.schedule(start_harpoon)
+        end)
     end
 end,
 ```
